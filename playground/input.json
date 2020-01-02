@@ -1,0 +1,75 @@
+{
+    "responseHeader": {
+        "status": 0,
+        "QTime": 0,
+        "params": {
+            "lng": "fr",
+            "format": "json",
+            "type": "avance",
+            "wt": "json",
+            "row": "1",
+            "fl": "subjectFR",
+            "start": "0",
+            "q": "*:*",
+            "fq": ""
+        }
+    },
+    "response": {
+        "numFound": 465576,
+        "start": 0,
+        "docs": [
+            {},
+            {},
+            {
+                "subjectFR": [
+                    "Intoxication",
+                    "Toxicocinetique",
+                    "Informatique",
+                    "Amobarbital",
+                    "Meprobamate"
+                ]
+            },
+            {
+                "subjectFR": [
+                    "Étudiant",
+                    "Bourses",
+                    "Salaire"
+                ]
+            },
+            {},
+            {
+                "subjectFR": [
+                    "Afrique subsaharienne",
+                    "Economie",
+                    "Etat",
+                    "Integration",
+                    "Mondialisation",
+                    "Plan d'ajustement structurel",
+                    "Privatisation",
+                    "Pvd",
+                    "Reforme economique"
+                ]
+            },
+            {
+                "subjectFR": [
+                    "Administration",
+                    "Astreinte",
+                    "Cour de discipline budgetaire",
+                    "Decision de justice (execution)",
+                    "Injonction",
+                    "Juridiction administrative"
+                ]
+            },
+            {},
+            {
+                "subjectFR": [
+                    "Entre-deux",
+                    "Exil",
+                    "Déplacement",
+                    "Femme"
+                ]
+            },
+            {}
+        ]
+    }
+}
