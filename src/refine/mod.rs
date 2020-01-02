@@ -1,0 +1,122 @@
+use chrono::prelude::*;
+use dotenv::dotenv;
+
+use crate::utils::save;
+
+use std::env;
+use std::error::Error;
+use std::fs;
+
+#[derive(Debug, Clone)]
+pub struct Refine<'a> {
+    pub refine_script: Option<&'a str>,
+    pub project_id: Option<String>,
+    pub project_name: Option<String>,
+    pub data_format: &'a str,
+    pub record_path: &'a str
+}
+
+impl <'a>Refine<'a> {
+    pub fn new(data_format: &'a str, record_path: &'a str, refine_script: Option<&'a str>) -> Refine<'a> {
+        let refine = Refine {
+            refine_script: refine_script,
+            record_path: record_path,
+            data_format: data_format,
+            project_id: None,
+            project_name: None,
+        };
+
+        refine
+    }
+
+    pub fn refine(&'a mut self, data: String, name: &'a str, format: Option<String>) -> Result<&'a mut Refine, Box<dyn Error>> {
+        self.create_project(data, name)?
+            .apply_operations()?
+            .export(format)
+    }
+
+    fn create_project(&'a mut self, data: String, project_name: &'a str) -> Result<&mut Refine, Box<dyn Error>>{
+        self.project_name = Some(format!("{} [{}]", Utc::now(), project_name));
+
+        info!("Creating an OpenRefin project");
+        let mut form = reqwest::multipart::Form::new()
+            .text("project-name", self.project_name.clone().unwrap())
+            .text("format", self.data_format.to_string())
+            .text("options", format!("{}\"recordPath\":{} {}", "{", self.record_path.clone(), "}"));
+
+        let project_file = reqwest::multipart::Part::text(data)
+            .file_name("data.json")
+            .mime_str("text/json")?;
+
+        form = form.part("project-file", project_file);
+
+        dotenv().ok();
+        let refine_base_url = env::var("REFINE_URL").unwrap_or("http://127.0.0.1:3333".into());
+        let create_project_url = format!("{}{}", refine_base_url, "/command/core/create-project-from-upload");
+
+        let client = reqwest::Client::new();
+        let response = client
+            .post(&create_project_url)
+            .multipart(form)
+            .send()?;
+
+
+        if let Some(project_id) = response.url().query_pairs().filter(|(param, _value)| param == "project").next() {
+            info!("OpenRefine project created {}", project_id.1);
+            self.project_id =  Some(project_id.1.into());
+        }
+
+        Ok(self)
+    }
+
+    pub fn apply_operations(&'a mut self) -> Result<&mut Refine, Box<dyn Error>> {
+        dotenv().ok();
+        if let (Some(project_id), Some(script)) = (self.project_id.clone(), self.refine_script.clone()) {
+
+            info!("Applying script {} to OpenRefine project {}", script, project_id);
+        
+            let script_contents = fs::read_to_string(script)?;
+            let params = [("project", &project_id), ("operations", &script_contents)];
+            let refine_base_url = env::var("OPEN_REFINE_URL").unwrap_or("http://127.0.0.1:3333".into());
+            let apply_operations_url = format!("{}{}", refine_base_url, "/command/core/apply-operations");
+
+            let client = reqwest::Client::new();
+            client
+                .post(&apply_operations_url)
+                .form(&params)
+                .send()?;
+
+            info!("Script applied");
+        }
+
+        Ok(self)
+    }
+
+    fn export(&'a mut self, format: Option<String>) -> Result<&mut Refine, Box<dyn Error>> {
+        match format {
+            Some(format) => {
+                info!("exporting data");
+                let refine_base_url = env::var("REFINE_URL").unwrap_or("http://127.0.0.1:3333".into());
+                let create_project_url = format!("{}{}", refine_base_url, "/command/core/export-rows");
+                
+                use std::collections::HashMap;
+
+                let mut params = HashMap::new();
+                params.insert("project", self.project_id.clone().expect("Should have a project IDs"));
+                params.insert("engine", r#"'{"facets": [], "mode": "row-based"}'"#.into());
+                params.insert("format", format.clone());
+
+                let client = reqwest::Client::new();
+                let mut response = client
+                    .post(&create_project_url)
+                    .form(&params)                   
+                    .send()?;
+
+                save(&mut response, &self.project_name.clone().expect("Should have a project ID"), &format)?;
+            },
+            None => ()
+        };
+
+        Ok(self)
+    }
+}
