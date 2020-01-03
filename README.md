@@ -10,7 +10,7 @@ _RefineIO facilite la création la transformation et l'export de projets OpenRef
 
 ## Installation
 
-Vous pouvez installer la dernière version stable de rustIO depuis la page release de ce dépôt.
+Vous pouvez installer la dernière version stable de refineIO depuis la page release de ce dépôt.
 
 ### Compilation et installation depuis le code source
 
@@ -19,7 +19,7 @@ Pour compiler refineIO vous disposer de [rust](https://www.rust-lang.org/tools/i
 
 __Linux__
 
-Sous linux la compilation et l'installation de RefineIO peuvent être réalisées grâce au MAKEFILE présent dans ce dépôt.
+Sous linux la compilation et l'installation de refineIO peuvent être réalisées grâce au MAKEFILE présent dans ce dépôt.
 
 ```sh
 make build
@@ -36,7 +36,7 @@ Le binaire de refineIO sera compilé dans le dossier suivant : `target\release`
 
 ## Configuration
 
-Par défaut refineIO utilise l'adresse `127.0.0.1:3333` pour se connecter au serveur OpenRefine. Vous pouvez changer ce comportement en ajoutant une variable d'environement `REFINE_URL` à votre système ou dans un fichier `.env` situé dans le répertoire ou est exécuté refineIO.
+Par défaut refineIO utilise l'adresse `127.0.0.1:3333` pour se connecter au serveur OpenRefine. Vous pouvez changer ce comportement en ajoutant une variable d'environnement `REFINE_URL` à votre système ou dans un fichier `.env` situé dans le répertoire ou est exécuté refineIO.
 
 __Sous linux__
 
@@ -107,7 +107,7 @@ cat playground/input.json | refine-io --format=json --record-path '["_", "respon
 
 __Ouverture automatique du projet OpenRefine__ `--open-project`
 
-Après sa création le projet OpenRefine peut être ouvert automatiquement dans le nagivateur.
+Après sa création le projet OpenRefine peut être ouvert automatiquement dans le navigateur.
 
 ```sh
 refine-io --input=playground/input.json --format=json --record-path '["_", "response", "docs", "_"]' --open-project
