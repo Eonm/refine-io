@@ -88,13 +88,13 @@ refine-io --input=playground/input.json --format=json --record-path '["_", "resp
 
 Les scripts peuvent être appliqués sur un projet existant ou sur un projet créé.
 
-__Après la création d'un projet__
+__Après la création d'un projet__ `--script=SCRIPT.json`
 
 ```sh
 refine-io --input=playground/input.json --format=json --record-path '["_", "response", "docs", "_"]' --script=playground/script.json
 ```
 
-__Sur un projet existant__
+__Sur un projet existant__ `--script=SCRIPT.json`
 
 ```sh
 refine-io --input=playground/input.json --format=json --record-path '["_", "response", "docs", "_"]' --script=playground/script.json
