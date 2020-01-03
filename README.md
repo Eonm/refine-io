@@ -15,7 +15,7 @@ Vous pouvez installer la dernière version stable de refineIO depuis la page rel
 ### Compilation et installation depuis le code source
 
 
-Pour compiler refineIO vous disposer de [rust](https://www.rust-lang.org/tools/install) sur votre système.
+Pour compiler refineIO vous devez disposer de [rust](https://www.rust-lang.org/tools/install) sur votre système.
 
 __Linux__
 
