@@ -1,0 +1,8 @@
+build:
+    cargo build --release
+    
+install: build
+    cp ./target/release/refine-io /usr/bin/refine-io
+
+test:
+    cargo test
