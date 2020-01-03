@@ -122,7 +122,7 @@ refine-io --input=playground/input.json --format=json --record-path '["_", "resp
 __Sur un projet existant__ `--script=SCRIPT.json`
 
 ```sh
-refine-io --input=playground/input.json --format=json --record-path '["_", "response", "docs", "_"]' --script=playground/script.json
+refine-io --project-id=123456789 --script=playground/script.json
 ```
 
 ### Export d'un projet
