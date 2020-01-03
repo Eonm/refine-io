@@ -67,6 +67,10 @@ RefineIO permet de réaliser trois grands types d'opérations avec OpenRefine :
 * __l'application de scripts__
 * __l'export de projets__
 
+```sh
+refine-io -h
+```
+
 ### Création d'un projet OpenRefine
 
 Les projets OpenRefine peuvent être créés à partir de plusieurs sources :
