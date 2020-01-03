@@ -52,7 +52,7 @@ setx REFINE_URL "ADRESSE_DU_SERVEUR"
 
 __Dans un fichier .env (Windows et Linux)__
 
-Le contenu du fichier `.env` doit être
+Le contenu du fichier `.env` doit être :
 
 ```sh
 REFINE_URL=ADRESSE_DU_SERVEUR
