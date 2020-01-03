@@ -8,22 +8,98 @@
 _RefineIO facilite la création la transformation et l'export de projets OpenRefine_
 </div>
 
+## Installation
+
+Vous pouvez installer la dernière version stable de rustIO depuis la page release de ce dépôt.
+
+### Compilation et installation depuis le code source
+
+
+Pour compiler refineIO vous disposer de [rust](https://www.rust-lang.org/tools/install) sur votre système.
+
+__Linux__
+
+Sous linux la compilation et l'installation de RefineIO peuvent être réalisées grâce au MAKEFILE présent dans ce dépôt.
+
+```sh
+make build
+sudo make install
+```
+
+__Windows__
+
+```sh
+cargo build --release
+```
+
+Le binaire de refineIO sera compilé dans le dossier suivant : `target\release`
+
 ## Usages
 
+RefineIO permet de réaliser trois grands types d'opérations avec OpenRefine : 
+
+* __la création de projets__
+* __l'application de scripts__
+* __l'export de projets__
+
+### Creation d'un projet OpenRefine
+
+Les projets OpenRefine peuvent être créés à partir de plusieurs sources :
+
+* une URL
+* un fichier de données
+* des données passées par l'entrée standard
+
+Les données d'entrée peuvent être au format csv, tsv, json et xml.
+
+
+__Import depuis un fichier__ `--input=FICHIER`
+
+
 ```sh
-refine-io --input=playground/input.json --format=csv --record-path '["_", "response", "docs", "_"]' -e csv
-cat playground/input.json | refine-io --format csv --record-path '["_", "response", "docs", "_"]' -e csv
+refine-io --input=playground/input.json --format=json --record-path '["_", "response", "docs", "_"]'
 ```
 
-### Appliquer un script `--script`
+L'option __record-path__ permet de préciser la manière dont les fichiers json et xml doivent être parsés par OpenRefine.
+
+__Import depuis une URL__ `--input=URL`
 
 ```sh
-refine-io --input=playground/input.json --script=playground/script.json --format=csv --record-path '["_", "response", "docs", "_"]' -e csv
-cat playground/input.json | refine-io --format csv --record-path '["_", "response", "docs", "_"]' -e csv
+refine-io --input="http://www.theses.fr/?q=*:*&format=json" --format=json --record-path '["_", "response", "docs", "_"]'
 ```
 
-### Accéder au projet OpenRefine `--open-project`
+Seules les URLs valides et ayant un protocole (http, https, etc.) sont acceptées par refineIO.
 
-### Exporter les données `-e FORMAT`
+__Import depuis l'entrée standard__
 
-### Exporter les données dans un fichier `-e FORMAT -o NOM_DU_FICHIER`
+```sh
+cat playground/input.json | refine-io --format=json --record-path '["_", "response", "docs", "_"]'
+```
+
+__Ouverture automatique du projet OpenRefine__ `--open-project`
+
+Après sa création le projet OpenRefine peut être ouvert automatiquement dans le nagivateur.
+
+```sh
+refine-io --input=playground/input.json --format=json --record-path '["_", "response", "docs", "_"]' --open-project
+```
+
+### Application de scripts
+
+Les scripts peuvent être appliqués sur un projet existant ou sur un projet créé.
+
+__Après la création d'un projet__
+
+```sh
+refine-io --input=playground/input.json --format=json --record-path '["_", "response", "docs", "_"]' --script=playground/script.json
+```
+
+__Sur un projet existant__
+
+```sh
+refine-io --input=playground/input.json --format=json --record-path '["_", "response", "docs", "_"]' --script=playground/script.json
+```
+
+### Export des projets
+
+
