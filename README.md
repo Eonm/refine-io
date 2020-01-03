@@ -89,7 +89,7 @@ __Import depuis un fichier__ `--input=FICHIER`
 refine-io --input=playground/input.json --format=json --record-path '["_", "response", "docs", "_"]'
 ```
 
-L'option __record-path__ permet de préciser la manière dont les fichiers json et xml doivent être parsés par OpenRefine.
+L'option __record-path__ permet de préciser la manière dont les fichiers json et xml doivent être analysés par OpenRefine.
 
 __Import depuis une URL__ `--input=URL`
 
