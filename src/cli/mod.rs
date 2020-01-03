@@ -19,7 +19,7 @@ pub fn cli() -> clap::ArgMatches<'static> {
                 .long("record-path")
                 .value_name("FILE")
                 .help("")
-                .required(true)
+                // .required(true)
                 .takes_value(true),
         )
         .arg(
@@ -45,7 +45,7 @@ pub fn cli() -> clap::ArgMatches<'static> {
                 .value_name("FORMAT")
                 .help("Format de fichier")
                 .possible_values(&["json", "xml", "csv", "tsv", "xls", "xlsx"])
-                .required(true)
+                // .required(true)
                 .takes_value(true),
         )
         .arg(
@@ -80,6 +80,13 @@ pub fn cli() -> clap::ArgMatches<'static> {
             Arg::with_name("silent")
                 .long("silent")
                 .help("N'affiche pas les logs"),
+        )
+        .arg(
+            Arg::with_name("project_id")
+                .long("project-id")
+                .conflicts_with("input")
+                .takes_value(true)
+                .help("Édite ou supprime un projet par son ID"),
         )
         .get_matches()
 }

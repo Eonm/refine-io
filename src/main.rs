@@ -8,6 +8,8 @@ use std::env;
 use std::error::Error;
 use url::Url;
 
+extern crate serde_json;
+
 mod utils;
 
 mod cli;
@@ -23,41 +25,54 @@ fn main() -> Result<(), Box<dyn Error>> {
         env_logger::from_env(Env::default().default_filter_or("info")).init();
     };
 
-    let format = match matches.value_of("format").expect("format not set") {
+    let format = match matches.value_of("format").unwrap_or("") {
         "csv" => "text/line-based/csv",
         "tsv" => "text/line-based/tsv",
         "json" => "text/json",
         "xml" => "text/xml",
         _ => "",
     };
+    
+    let script = matches.value_of("script").map(|s| s.to_string());
 
-    let data = match matches.value_of("input") {
-        Some(input) => match Url::parse(input) {
-            Ok(_) => utils::download(input)?,
-            Err(_) => utils::load(input)?,
+    let record_path = if format == "text/json" || format == "text/xml" {
+        matches
+            .value_of("record_path")
+            .expect("record-path not set")
+    } else {
+        matches
+            .value_of("record_path")
+            .unwrap_or("")
+    };
+    
+    let project = match matches.value_of("project_id") {
+        Some(id) => {
+            let mut p = RefineProject::open(id)?;
+            p.refine_script = script;
+            p
         },
         None => {
-            use std::io::{self, Read};
-            let mut buffer = String::new();
-            io::stdin().read_to_string(&mut buffer)?;
-            buffer
+            let data = match matches.value_of("input") {
+                Some(input) => match Url::parse(input) {
+                    Ok(_) => utils::download(input)?,
+                    Err(_) => utils::load(input)?,
+                },
+                None => {
+                    use std::io::{self, Read};
+                    let mut buffer = String::new();
+                    io::stdin().read_to_string(&mut buffer)?;
+                    buffer
+                }
+            };
+
+            let project_name = matches.value_of("project_name").unwrap_or("");
+
+
+            let mut refine = RefineInit::new(format, record_path, script);
+            refine.create_project(data, project_name)?
         }
+
     };
-    let script = matches.value_of("script");
-
-    let record_path = matches
-        .value_of("record_path")
-        .expect("record-path not set");
-
-    let project_name = matches.value_of("project_name").unwrap_or("");
-
-    let export_format = match matches.value_of("export_format") {
-        Some(f) => Some(f.to_string()),
-        None => None,
-    };
-
-    let mut refine = RefineInit::new(format, record_path, script);
-    let project: RefineProject = refine.create_project(data, project_name)?;
 
     if matches.is_present("open_project") {
         info!("opening OpenRefine project");

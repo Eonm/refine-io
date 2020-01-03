@@ -7,9 +7,11 @@ use std::env;
 use std::error::Error;
 use std::fs;
 
+use serde_json::Value;
+
 #[derive(Debug, Clone)]
 pub struct RefineInit<'a> {
-    pub refine_script: Option<&'a str>,
+    pub refine_script: Option<String>,
     pub project_id: Option<String>,
     pub project_name: Option<String>,
     pub data_format: &'a str,
@@ -20,7 +22,7 @@ impl<'a> RefineInit<'a> {
     pub fn new(
         data_format: &'a str,
         record_path: &'a str,
-        refine_script: Option<&'a str>,
+        refine_script: Option<String>,
     ) -> RefineInit<'a> {
         let refine = RefineInit {
             refine_script: refine_script,
@@ -37,7 +39,7 @@ impl<'a> RefineInit<'a> {
         &'a mut self,
         data: String,
         project_name: &'a str,
-    ) -> Result<RefineProject<'a>, Box<dyn Error>> {
+    ) -> Result<RefineProject, Box<dyn Error>> {
         self.project_name = Some(format!("{} [{}]", Utc::now(), project_name));
 
         info!("Creating an OpenRefin project");
@@ -78,20 +80,37 @@ impl<'a> RefineInit<'a> {
         Ok(RefineProject {
             project_id: self.project_id.clone().expect("Expect a project ID"),
             project_name: self.project_name.clone().expect("Expect a project name"),
-            refine_script: self.refine_script,
+            refine_script: self.refine_script.clone(),
         })
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct RefineProject<'a> {
-    pub refine_script: Option<&'a str>,
+pub struct RefineProject {
+    pub refine_script: Option<String>,
     pub project_id: String,
     pub project_name: String,
 }
 
-impl<'a> RefineProject<'a> {
-    pub fn apply_operations(&'a mut self) -> Result<RefineProject<'a>, Box<dyn Error>> {
+impl RefineProject {
+    pub fn open(id: &str) ->  Result<RefineProject, Box<dyn Error>> {
+        info!("opening refine project {}", id);
+        let refine_base_url = env::var("OPEN_REFINE_URL").unwrap_or("http://127.0.0.1:3333".into());
+        let command_url = format!("{}/command/core/get-all-project-metadata", refine_base_url);
+
+        let response = reqwest::get(&command_url)?.text()?;
+        let v: Value = serde_json::from_str(&response)?;
+
+        let project_name = v["projects"][id]["name"].as_str().unwrap();
+
+        Ok(RefineProject {
+            refine_script: None,
+            project_id: id.into(),
+            project_name: project_name.into(),
+        })
+    }
+
+    pub fn apply_operations(&mut self) -> Result<RefineProject, Box<dyn Error>> {
         dotenv().ok();
 
         let project_id = self.project_id.clone();
@@ -119,9 +138,9 @@ impl<'a> RefineProject<'a> {
     }
 
     pub fn export(
-        &'a mut self,
+        &mut self,
         format: Option<String>,
-    ) -> Result<RefineProject<'a>, Box<dyn Error>> {
+    ) -> Result<RefineProject, Box<dyn Error>> {
         match format {
             Some(format) => {
                 info!("exporting data");
@@ -149,9 +168,9 @@ impl<'a> RefineProject<'a> {
     }
 
     pub fn print(
-        &'a mut self,
+        &mut self,
         format: Option<String>,
-    ) -> Result<RefineProject<'a>, Box<dyn Error>> {
+    ) -> Result<RefineProject, Box<dyn Error>> {
         match format {
             Some(format) => {
                 info!("exporting data");
