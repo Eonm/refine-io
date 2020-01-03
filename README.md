@@ -34,6 +34,31 @@ cargo build --release
 
 Le binaire de refineIO sera compilé dans le dossier suivant : `target\release`
 
+## Configuration
+
+Par défaut refineIO utilise l'adresse `127.0.0.1:3333` pour se connecter au serveur OpenRefine. Vous pouvez changer ce comportement en ajoutant une variable d'environement `REFINE_URL` à votre système ou dans un fichier `.env` situé dans le répertoire ou est exécuté refineIO.
+
+__Sous linux__
+
+```sh
+export REFINE_URL=ADRESSE_DU_SERVEUR
+```
+
+__Sous Windows__
+
+```cmd
+setx REFINE_URL "ADRESSE_DU_SERVEUR"
+```
+
+__Dans un fichier .env (Windows et Linux)__
+
+Le contenu du fichier `.env` doit contenir
+
+```sh
+REFINE_URL=ADRESSE_DU_SERVEUR
+```
+
+
 ## Usages
 
 RefineIO permet de réaliser trois grands types d'opérations avec OpenRefine : 
@@ -42,7 +67,7 @@ RefineIO permet de réaliser trois grands types d'opérations avec OpenRefine :
 * __l'application de scripts__
 * __l'export de projets__
 
-### Creation d'un projet OpenRefine
+### Création d'un projet OpenRefine
 
 Les projets OpenRefine peuvent être créés à partir de plusieurs sources :
 
