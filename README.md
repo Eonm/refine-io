@@ -100,6 +100,6 @@ __Sur un projet existant__ `--script=SCRIPT.json`
 refine-io --input=playground/input.json --format=json --record-path '["_", "response", "docs", "_"]' --script=playground/script.json
 ```
 
-### Export des projets
+### Export d'un projet
 
 
