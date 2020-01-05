@@ -1,6 +1,6 @@
 <div align="center">
 
-# RefineIO
+# 💎 RefineIO
 
 [![made-with-Rust](https://img.shields.io/badge/Made%20with-Rust-1f425f.svg)](https://www.rust-lang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -15,7 +15,7 @@ Vous pouvez installer la dernière version stable de refineIO depuis la page rel
 ### Compilation et installation depuis le code source
 
 
-Pour compiler refineIO vous devez disposer de [rust](https://www.rust-lang.org/tools/install) sur votre système.
+Pour compiler refineIO vous devez avoir installé [rust](https://www.rust-lang.org/tools/install) sur votre système.
 
 __Linux__
 
@@ -86,7 +86,7 @@ __Import depuis un fichier__ `--input=FICHIER`
 
 
 ```sh
-refine-io --input=playground/input.json --format=json --record-path '["_", "response", "docs", "_"]'
+refine-io --input=playground/input.json --format=json --record-path='["_", "response", "docs", "_"]'
 ```
 
 L'option __record-path__ permet de préciser la manière dont les fichiers json et xml doivent être analysés par OpenRefine.
@@ -94,7 +94,7 @@ L'option __record-path__ permet de préciser la manière dont les fichiers json 
 __Import depuis une URL__ `--input=URL`
 
 ```sh
-refine-io --input="http://www.theses.fr/?q=*:*&format=json" --format=json --record-path '["_", "response", "docs", "_"]'
+refine-io --input="http://www.theses.fr/?q=*:*&format=json" --format=json --record-path='["_", "response", "docs", "_"]'
 ```
 
 Seules les URLs valides et ayant un protocole (http, https, etc.) sont acceptées par refineIO.
@@ -102,16 +102,22 @@ Seules les URLs valides et ayant un protocole (http, https, etc.) sont acceptée
 __Import depuis l'entrée standard__
 
 ```sh
-cat playground/input.json | refine-io --format=json --record-path '["_", "response", "docs", "_"]'
+cat playground/input.json | refine-io --format=json --record-path='["_", "response", "docs", "_"]'
 ```
-__Nom du projet__
+__Spécifier un nom de projet__ `--name=NOM`
+
+Par défaut le nom d'un projet correspond à la date du jour au format UTC. Il est possible de spécifié le nom du projet avec l'option `--name`. Cette option ne peut être utilisé que pour la création d'un projet.
+
+```sh
+refine-io --input=playground/input.json --format=json --record-path='["_", "response", "docs", "_"]' --name="nom du projet"
+```
 
 __Ouverture automatique du projet OpenRefine__ `--open-project`
 
 Après sa création le projet OpenRefine peut être ouvert automatiquement dans le navigateur.
 
 ```sh
-refine-io --input=playground/input.json --format=json --record-path '["_", "response", "docs", "_"]' --open-project
+refine-io --input=playground/input.json --format=json --record-path='["_", "response", "docs", "_"]' --open-project
 ```
 
 ### Application de scripts
@@ -121,7 +127,7 @@ Les scripts peuvent être appliqués sur un projet existant ou sur un projet cr�
 __Après la création d'un projet__ `--script=SCRIPT.json`
 
 ```sh
-refine-io --input=playground/input.json --format=json --record-path '["_", "response", "docs", "_"]' --script=playground/script.json
+refine-io --input=playground/input.json --format=json --record-path='["_", "response", "docs", "_"]' --script=playground/script.json
 ```
 
 __Sur un projet existant__ `--script=SCRIPT.json`
@@ -131,13 +137,54 @@ refine-io --project-id=123456789 --script=playground/script.json
 ```
 
 ### Exporter les données d'un projet
-RefineIO permet d'exporter ou d'afficher les données d'un projet.
+
+RefineIO permet d'exporter ou d'afficher les données d'un projet OpenRefine.
+
+__Afficher les données d'un projet dans la sortie  standard__ `--print=FORMAT`
+
+Les données peuvent être affichées au format csv, tsv et html.
+
+```sh
+refine-io --project-id=123456789 --print csv
+```
+
+```sh
+refine-io --project-id=123456789 --print csv > data.csv
+```
+
+__Exporter les données dans un fichier__ `--export=FORMAT`
 
 Les données peuvent être exportés au format csv, tsv, html, xsl, xsls et ods.
 
+Si aucun nom de fichier n'est spécifié à l'export `-o` le fichier téléchargé portera le nom du projet OpenRefine.
+
+```sh
+refine-io --project-id=123456789 --export csv
+```
+
+```sh
+refine-io --project-id=123456789 --export csv -o data.csv
+```
+
+__Ouverture automatique du fichier exporté__ `--open-export`
+
+Les données exportées peuvent être ouverte dans le logiciel par défaut de votre système d'exploitation.
+
+```sh
+refine-io --project-id=123456789 --export csv --open-export
+```
+
+## Suppression du projet
+
+Le projet OpenRefine peut être supprimé grâce à l'option `--clean`. __Attention cette action est irreversible.__ Aucune confirmation ne sera demandée par refine-io.
+
+```sh
+refine-io --project-id=123456789 --export csv --open-export
+```
+
 ## Variables d'environement
 
-Certaines variables d'environement peuvent être utilisé pour changerle comportement de refineIO
+Certaines variables d'environement peuvent être utilisées pour changer le comportement de refineIO
 
 `RECORD_PATH` = définit le record path à utiliser par défaut
-`RUST_LOG` = permet de définit le niveaux de log et les modules devant logger les informations. Voir [env_logger](https://docs.rs/crate/).
+`RUST_LOG` = permet de définir le niveaux de log et de spécifier les modules devant logger les informations. Voir [env_logger](https://docs.rs/crate/).
