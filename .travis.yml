@@ -14,6 +14,7 @@ addons:
       - binutils-dev
       - cmake
       - default-jre
+      - python3.6
     sources:
       - kalakris-cmake
 
@@ -31,7 +32,7 @@ sudo: false
 cache: cargo
 script:
   - ./openrefine-3.2/refine &
-  - python -m http.server &
+  - python3 -m http.server &
   - cargo test --verbose --all
 
 after_success:
