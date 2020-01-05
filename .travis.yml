@@ -34,9 +34,9 @@ script:
   - ./openrefine-3.2/refine &
   - python3 -m http.server &
   - cargo test --verbose --all
-  - cargo coveralls --bins --exclude-pattern=/.cargo,src/main.rs
 
-# after_success:
+after_success:
+  - cargo coveralls --exclude-pattern=/.cargo,src/main.rs,scr/cli.rs
 
 notifications:
   email: false
