@@ -190,4 +190,5 @@ refine-io --project-id=123456789 --export csv --open-export
 Certaines variables d'environement peuvent être utilisées pour changer le comportement de refineIO
 
 `RECORD_PATH` = définit le record path à utiliser par défaut
+
 `RUST_LOG` = permet de définir le niveaux de log et de spécifier les modules devant logger les informations. Voir [env_logger](https://docs.rs/crate/).
