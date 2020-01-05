@@ -19,7 +19,7 @@ Pour compiler refineIO vous devez disposer de [rust](https://www.rust-lang.org/t
 
 __Linux__
 
-Sous linux la compilation et l'installation de refineIO peuvent être réalisées grâce au MAKEFILE présent dans ce dépôt.
+Sous linux la compilation et l'installation de refineIO peuvent être réalisées grâce au Makefile présent dans ce dépôt.
 
 ```sh
 make build
@@ -58,14 +58,14 @@ Le contenu du fichier `.env` doit être :
 REFINE_URL=ADRESSE_DU_SERVEUR
 ```
 
-
 ## Usages
 
-RefineIO permet de réaliser trois grands types d'opérations avec OpenRefine : 
+RefineIO permet de réaliser quatre grands types d'opérations avec OpenRefine : 
 
 * __la création de projets__
 * __l'application de scripts__
 * __l'export de projets__
+* __la suppression de projets__
 
 ```sh
 refine-io -h
@@ -104,6 +104,7 @@ __Import depuis l'entrée standard__
 ```sh
 cat playground/input.json | refine-io --format=json --record-path '["_", "response", "docs", "_"]'
 ```
+__Nom du projet__
 
 __Ouverture automatique du projet OpenRefine__ `--open-project`
 
@@ -129,6 +130,14 @@ __Sur un projet existant__ `--script=SCRIPT.json`
 refine-io --project-id=123456789 --script=playground/script.json
 ```
 
-### Export d'un projet
+### Exporter les données d'un projet
+RefineIO permet d'exporter ou d'afficher les données d'un projet.
 
+Les données peuvent être exportés au format csv, tsv, html, xsl, xsls et ods.
 
+## Variables d'environement
+
+Certaines variables d'environement peuvent être utilisé pour changerle comportement de refineIO
+
+`RECORD_PATH` = définit le record path à utiliser par défaut
+`RUST_LOG` = permet de définit le niveaux de log et les modules devant logger les informations. Voir [env_logger](https://docs.rs/crate/).

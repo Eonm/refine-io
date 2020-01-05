@@ -21,16 +21,12 @@ pub fn load(path: &str) -> Result<String, Box<dyn Error>> {
 pub fn save(
     response: &mut reqwest::Response,
     path: &str,
-    format: &str,
 ) -> Result<(), Box<dyn Error>> {
     let mut dest = {
-        let fname = format!("{}.{}", path, format);
-
-        info!("data will be located under: {}", fname);
+        let fname = format!("{}", path);
         File::create(fname)?
     };
 
     copy(response, &mut dest)?;
-    info!("data exported");
     Ok(())
 }

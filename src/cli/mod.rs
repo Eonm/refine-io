@@ -6,11 +6,20 @@ pub fn cli() -> clap::ArgMatches<'static> {
         .author("eonm. <eon.mathis@gmail.com>")
         .about("Automatise la creation et l'export de projet OpenRefine")
         .arg(
-            Arg::with_name("script")
-                .short("s")
-                .long("script")
-                .value_name("FILE")
-                .help("Script de transformation OpenRefine")
+            Arg::with_name("input")
+                .short("i")
+                .long("input")
+                .value_name("FICHIER|URL")
+                .help("Source des données")
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("format")
+                .short("f")
+                .long("format")
+                .value_name("FORMAT")
+                .help("Format des données d'import")
+                .possible_values(&["json", "xml", "csv", "tsv", "xls", "xlsx"])
                 .takes_value(true),
         )
         .arg(
@@ -18,8 +27,7 @@ pub fn cli() -> clap::ArgMatches<'static> {
                 .short("r")
                 .long("record-path")
                 .value_name("FILE")
-                .help("")
-                // .required(true)
+                .help("Expression pour l'analyse des données")
                 .takes_value(true),
         )
         .arg(
@@ -31,62 +39,70 @@ pub fn cli() -> clap::ArgMatches<'static> {
                 .takes_value(true),
         )
         .arg(
-            Arg::with_name("output")
-                .short("o")
-                .long("output")
+            Arg::with_name("open_project")
+                .long("open-project")
+                .help("Ouvre le projet OpenRefine dans le navigateur"),
+        )
+        .arg(
+            Arg::with_name("project_id")
+                .long("project-id")
+                .value_name("ID")
+                .conflicts_with("input")
+                .takes_value(true)
+                .help("Ouvre un projet OpenRefine"),
+        )
+        .arg(
+            Arg::with_name("script")
+                .short("s")
+                .long("script")
                 .value_name("FILE")
-                .help("Fichier de sortie")
+                .help("Applique un script de transformation OpenRefine")
                 .takes_value(true),
         )
         .arg(
-            Arg::with_name("format")
-                .short("f")
-                .long("format")
-                .value_name("FORMAT")
-                .help("Format de fichier")
-                .possible_values(&["json", "xml", "csv", "tsv", "xls", "xlsx"])
-                // .required(true)
-                .takes_value(true),
-        )
-        .arg(
-            Arg::with_name("export_format")
+            Arg::with_name("export")
                 .short("e")
-                .long("export-format")
+                .long("export")
                 .value_name("FORMAT")
                 .help("Format d'export")
                 .possible_values(&["csv", "tsv", "xls", "xlsx", "ods", "html"])
                 .takes_value(true),
         )
         .arg(
-            Arg::with_name("input")
-                .short("i")
-                .long("input")
-                .value_name("FICHIER|URL")
-                .help("Source")
-                .takes_value(true),
-        )
-        .arg(
-            Arg::with_name("open_project")
-                .long("open-project")
-                .help("Ouvre le projet OpenRefine après sa création"),
-        )
-        .arg(
-            Arg::with_name("open_result")
-                .long("open-result")
-                //require export
+            Arg::with_name("open_export")
+                .long("open-export")
+                .requires("export")
                 .help("Ouvre les données téléchargées"),
+        )
+        .arg(
+            Arg::with_name("print")
+                .short("p")
+                .long("print")
+                .value_name("FORMAT")
+                .takes_value(true)
+                .possible_values(&["csv", "tsv", "html"])
+                .help("Affiche les données du projet OpenRefine"),
+        )
+        .arg(
+            Arg::with_name("output")
+                .short("o")
+                .long("output-name")
+                .value_name("FICHIER")
+                .takes_value(true)
+                .help("Nom du fichier exporté par OpenRefine"),
+        )
+        .arg(
+            Arg::with_name("clean")
+                .visible_alias("delete")
+                .short("C")
+                .long("clean")
+                .conflicts_with("open_project")
+                .help("Supprime le projet OpenRefine"),
         )
         .arg(
             Arg::with_name("silent")
                 .long("silent")
-                .help("N'affiche pas les logs"),
-        )
-        .arg(
-            Arg::with_name("project_id")
-                .long("project-id")
-                .conflicts_with("input")
-                .takes_value(true)
-                .help("Édite ou supprime un projet par son ID"),
+                .help("Cache les logs"),
         )
         .get_matches()
 }

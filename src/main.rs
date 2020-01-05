@@ -2,21 +2,19 @@
 extern crate log;
 extern crate clap;
 extern crate open;
+extern crate serde_json;
+#[macro_use]
+extern crate lazy_static;
 
 use env_logger::Env;
-use std::env;
 use std::error::Error;
-use url::Url;
 
-extern crate serde_json;
-
+mod consts;
 mod utils;
-
 mod cli;
 use cli::cli;
-
 mod refine;
-use refine::{RefineInit, RefineProject};
+use refine::{RefineInit, RefineProject, export::Export, process::Process, delete::Delete};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = cli();
@@ -25,53 +23,24 @@ fn main() -> Result<(), Box<dyn Error>> {
         env_logger::from_env(Env::default().default_filter_or("info")).init();
     };
 
-    let format = match matches.value_of("format").unwrap_or("") {
-        "csv" => "text/line-based/csv",
-        "tsv" => "text/line-based/tsv",
-        "json" => "text/json",
-        "xml" => "text/xml",
-        _ => "",
-    };
-    
-    let script = matches.value_of("script").map(|s| s.to_string());
+    info!("🏭 ready to refine 🛢️");
 
-    let record_path = if format == "text/json" || format == "text/xml" {
-        matches
-            .value_of("record_path")
-            .expect("record-path not set")
-    } else {
-        matches
-            .value_of("record_path")
-            .unwrap_or("")
-    };
-    
+    let project = import_or_open(&matches)?;
+    modify(&matches, project.clone())?;
+    export(&matches, project.clone())?;
+    clean(&matches, project.clone())?;
+
+    Ok(())
+}
+
+fn import_or_open(matches: &clap::ArgMatches) -> Result<RefineProject, Box<dyn Error>> {
     let project = match matches.value_of("project_id") {
         Some(id) => {
-            let mut p = RefineProject::open(id)?;
-            p.refine_script = script;
-            p
+            RefineProject::load(id)?
         },
-        None => {
-            let data = match matches.value_of("input") {
-                Some(input) => match Url::parse(input) {
-                    Ok(_) => utils::download(input)?,
-                    Err(_) => utils::load(input)?,
-                },
-                None => {
-                    use std::io::{self, Read};
-                    let mut buffer = String::new();
-                    io::stdin().read_to_string(&mut buffer)?;
-                    buffer
-                }
-            };
-
-            let project_name = matches.value_of("project_name").unwrap_or("");
-
-
-            let mut refine = RefineInit::new(format, record_path, script);
-            refine.create_project(data, project_name)?
+        None => { 
+            RefineInit::create_project(matches.value_of("input"), matches.value_of("format"), matches.value_of("project_name"), matches.value_of("record_path"))?          
         }
-
     };
 
     if matches.is_present("open_project") {
@@ -79,31 +48,52 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         if open::that(format!(
             "{}/project?project={}",
-            env::var("REFINE_URL").unwrap_or("http://127.0.0.1:3333".into()),
+            consts::REFINE_BASE_URL.to_string(),
             project.project_id.clone()
         ))
         .is_ok()
         {
-            info!("OpenRefine opened");
+            info!("OpenRefine project opened");
         } else {
-            warn!("Failed to OpenRefine project")
+            warn!("failed to open OpenRefine project")
         }
     }
 
-    if matches.is_present("script") {
-        project.clone().apply_operations()?;
+    Ok(project)
+}
+
+fn modify(matches: &clap::ArgMatches, mut project: RefineProject) -> Result<(), Box<dyn Error>> {
+    project.refine_script =  matches.value_of("script").map(String::from);
+    project.clone().apply_operations()?;
+
+    Ok(())
+}
+
+fn export(matches: &clap::ArgMatches, project: RefineProject) -> Result<(), Box<dyn Error>> {
+    if let Some(format) = matches.value_of("export") {
+        let output = matches.value_of("output").map(String::from);
+        let file_path = project.clone().save(format.into(), output)?;
+
+        if matches.is_present("open_export") {
+            info!("opening exported data");
+            if open::that(file_path).is_ok() {
+                    info!("data file opened");
+            } else {
+                warn!("failed to data file")
+            }
+        }
     }
 
-    if let (Some(export_format), Some(output)) = (
-        matches.value_of("export_format"),
-        matches.value_of("output"),
-    ) {
-        project.clone().export(Some(export_format.into()))?;
-    } else if let (Some(export_format), None) = (
-        matches.value_of("export_format"),
-        matches.value_of("output"),
-    ) {
-        project.clone().print(Some(export_format.into()))?;
+    if let Some(format) = matches.value_of("print") {
+        project.clone().print(format.into())?;
+    }
+
+    Ok(())
+}
+
+fn clean(matches: &clap::ArgMatches, project: RefineProject) -> Result<(), Box<dyn Error>> {
+    if matches.is_present("clean") {
+        project.clone().delete()?;
     }
 
     Ok(())
