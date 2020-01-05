@@ -27,7 +27,17 @@ impl<'a> RefineInit<'a> {
             Some(source) => {
                 info!("creating OpenRefine project");
                 match Url::parse(source) {
-                    Ok(_) => RefineInit::from_url(source, data_format.expect("data format is expected for URL import"), project_name, record_path),
+                    Ok(_) => {
+                        match data_format {
+                            Some(format) => {
+                                RefineInit::from_url(source, format, project_name, record_path)
+                            },
+                            None => {
+                                error!("data format (--format) is expected for URL import");
+                                panic!("data format (--format) is expected for URL import")
+                            },
+                        }
+                    },
                     Err(_) => {
                         RefineInit::from_file(source, project_name, record_path)
                     },
