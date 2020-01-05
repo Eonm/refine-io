@@ -60,9 +60,15 @@ impl<'a> RefineInit<'a> {
                     },
                 };
                 
+                #[cfg(not(test))]
                 println!("Waiting for user input. Press C^D to submit data");
+                #[cfg(not(test))]
                 let mut buffer = String::new();
+                #[cfg(not(test))]
                 io::stdin().read_to_string(&mut buffer)?;
+
+                #[cfg(test)]
+                let buffer = "test input\r\n".to_string();
 
                 info!("creating OpenRefine project");
                 RefineInit::from_string(&buffer, data_format, project_name, record_path)
@@ -104,5 +110,55 @@ impl RefineProject {
             project_id: id.into(),
             project_name: project_name.into(),
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+    use crate::refine::delete::Delete;
+
+
+   #[test]
+   
+    fn test_load() {
+        let project = RefineInit::create_project(Some("playground/input.json"), Some("json"), None, Some(r#"["_"]"#)).expect("Failed to create project");
+        RefineProject::load(&project.project_id).expect("Failed to load project");
+        project.delete().expect("Failed to delete project");
+    }
+
+    #[test]
+    fn create_project_from_stdin() {
+        let project = RefineInit::create_project(None, Some("json"), None, Some(r#"["_"]"#)).expect("Failed to create project");
+        project.delete().expect("Failed to delete project");
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_url_import_requires_format() {
+        let project = RefineInit::create_project(Some("http://127.0.0.1/playground/input.json"), None, None, Some(r#"["_"]"#)).expect("Failed to create project");
+        project.delete().expect("Failed to delete project");
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_stdin_requires_format() {
+        let project = RefineInit::create_project(None, None, None, Some(r#"["_"]"#)).expect("Failed to create project");
+        project.delete().expect("Failed to delete project");
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_stdin_json_requires_reccord_path() {
+        let project = RefineInit::create_project(None, Some("json"), None, None).expect("Failed to create project");
+        project.delete().expect("Failed to delete project");
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_stdin_xml_requires_reccord_path() {
+        let project = RefineInit::create_project(None, Some("xml"), None, None).expect("Failed to create project");
+        project.delete().expect("Failed to delete project");
     }
 }

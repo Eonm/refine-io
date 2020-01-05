@@ -40,3 +40,26 @@ fn load_script(path: &str) -> Result<String, Box<dyn Error>> {
     info!("script loaded");
     Ok(script)
 }
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+    use crate::refine::RefineInit;
+    use crate::refine::delete::Delete;
+    use crate::refine::import::Import;
+        use crate::refine::export::Export;
+
+    #[test]
+    fn test_apply_script() {
+        let mut project = RefineInit::from_string("_ - subjectFR - subjectFR\n1", "tsv", None, None).expect("Failed to create project");
+        project.refine_script = Some("./playground/refine.json".into());
+        project.apply_operations().expect("Failed to apply operations");
+
+        let data = project.print("tsv".into()).expect("Failed to get remote data");
+        
+        assert_eq!(data, "_ - subjectFR - subjectFR\ttest\n1\t1\n");
+
+        project.delete().expect("Failed to delete project");
+    }
+}

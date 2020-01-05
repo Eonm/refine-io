@@ -131,3 +131,35 @@ fn format_to_mime<'a>(mime_type: String) -> &'a str {
         _ => "text/plain",
     }
 }
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+    use crate::refine::delete::Delete;
+
+
+   #[test]
+    fn test_import() {
+        let project = RefineInit::create_project(Some("playground/input.json"), Some("json"), None, Some(r#"["_"]"#)).expect("Failed to create project");
+        project.delete().expect("Failed to delete project");
+    }
+
+   #[test]
+    fn test_from_file() {
+        let project = RefineInit::from_file("playground/input.json", None, Some(r#"["_"]"#)).expect("Failed to create project");
+        project.delete().expect("Failed to delete project");
+    }
+
+    #[test]
+    fn test_from_url() {
+        let project = RefineInit::from_url("http://127.0.0.1:8000/playground/input.json", "json", None, Some(r#"["_"]"#)).expect("Failed to create project");
+        project.delete().expect("Failed to delete project");
+    }
+
+    #[test]
+    fn test_from_string() {
+        let project = RefineInit::from_string("e\te\ne\te\n", "tsv", None, None).expect("Failed to create project");
+        project.delete().expect("Failed to delete project");
+    }
+}

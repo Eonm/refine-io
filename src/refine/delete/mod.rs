@@ -1,6 +1,7 @@
 use std::error::Error;
 use crate::refine::RefineProject;
 use crate::consts;
+use serde_json::Value;
 
 pub trait Delete {
     fn delete(&self) -> Result<(), Box<dyn Error>>;
@@ -21,7 +22,38 @@ fn delete_request(project_id: &str) -> Result<(), Box<dyn Error>> {
     let request_params = [("project", &project_id)];
 
     let client = reqwest::Client::new();
-    client.post(&download_url).form(&request_params).send()?;
+    let mut response = client.post(&download_url).form(&request_params).send()?;
+    let json_response : Value = response.json()?;
 
-    Ok(())
+    match json_response["code"].as_str() {
+        Some(code) => {
+            if code == "ok" {
+                Ok(())
+            } else {
+                error!("Failed to delete OpenRefine project {}", project_id);
+                panic!("Failed to delete OpenRefine project {}", project_id);
+            }
+        },
+        None => {
+            error!("Failed to delete OpenRefine project {}", project_id);
+            panic!("Failed to delete OpenRefine project {}", project_id);
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::RefineInit;
+
+    #[test]
+    #[should_panic]
+    fn test_delete_project() {
+        let project = RefineInit::create_project(Some("playground/input.json"), Some("json"), None, Some(r#"["_"]"#)).expect("Failed to create project");
+        let project_id = project.project_id.clone();
+
+        RefineProject::load(&project_id).expect("should not panic");
+        project.delete().expect("Failed to delete project");
+        RefineProject::load(&project_id).expect("should panic");
+    }
 }

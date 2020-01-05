@@ -10,7 +10,7 @@ pub trait Export {
     ///Save an OpenRefine project to disk
     fn save(&mut self, format: String, file_name: Option<String>) -> Result<String, Box<dyn Error>>;
     ///Print OpenRefine data to STDOUT
-    fn print(&mut self, format: String) -> Result<(), Box<dyn Error>>;
+    fn print(&mut self, format: String) -> Result<String, Box<dyn Error>>;
 }
 
 impl Export for RefineProject {
@@ -32,15 +32,16 @@ impl Export for RefineProject {
         Ok(path)
     }
 
-    fn print(&mut self, format: String) -> Result<(), Box<dyn Error>> {
+    fn print(&mut self, format: String) -> Result<String, Box<dyn Error>> {
         let mut data = download_data(&self.project_id, &format)?;
+        let text = data.text()?;
         
         info!("printing data:");
-        println!("{}", data.text()?);
+        println!("{}", text);
 
         info!("data printed");
 
-        Ok(())
+        Ok(text)
     }
 }
 
@@ -59,4 +60,35 @@ fn download_data(project_id: &str, format: &str) -> Result<reqwest::Response, Bo
     info!("data downloaded");
 
     Ok(response)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::RefineInit;
+    use crate::refine::delete::Delete;
+
+    #[test]
+    fn test_save() {
+        use tempfile::Builder;
+        let tmp_dir = Builder::new().prefix("example").tempdir().unwrap();
+
+        let output_file = format!("{}test.csv", tmp_dir.path().display());
+        
+        let mut project = RefineInit::create_project(Some("playground/input.json"), Some("json"), None, Some(r#"["_"]"#)).expect("Failed to create project");
+        project.save("csv".into(), Some(output_file.clone())).expect("Failed to save");
+
+        assert_eq!(Path::new(&output_file).exists(), true);
+
+        project.delete().expect("Failed to delete project");
+    }
+
+    #[test]
+    fn test_print() {       
+        let mut project = RefineInit::create_project(Some("./playground/input.json"), Some("json"), None, Some(r#"["_"]"#)).expect("Failed to create project");
+        let data = project.print("csv".into()).expect("Failed to save");
+        assert_eq!(data.is_empty(), false);
+
+        project.delete().expect("Failed to delete project");
+    }
 }

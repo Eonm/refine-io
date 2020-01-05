@@ -3,6 +3,7 @@ extern crate log;
 extern crate clap;
 extern crate open;
 extern crate serde_json;
+extern crate tempfile;
 #[macro_use]
 extern crate lazy_static;
 
