@@ -18,7 +18,7 @@ addons:
       - kalakris-cmake
 
 before_script:
-  - wget https://github.com/OpenRefine/OpenRefine/releases/download/3.2/openrefine-linux- 3.2.tar.gz
+  - wget https://github.com/OpenRefine/OpenRefine/releases/download/3.2/openrefine-linux-3.2.tar.gz
   - tar -xvzf openrefine-linux-3.2.tar.gz
   - export PATH=$HOME/.cargo/bin:$PATH
   - cargo install cargo-update || echo "cargo-update already installed"
