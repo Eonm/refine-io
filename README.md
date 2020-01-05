@@ -2,9 +2,11 @@
 
 # 💎 RefineIO
 
+[![Build Status](https://travis-ci.com/Eonm/refine-io.svg?branch=master)](https://travis-ci.com/Eonm/refine-io)
+[![Coverage Status](https://coveralls.io/repos/github/Eonm/refine-io/badge.svg?branch=master)](https://coveralls.io/github/Eonm/refine-io?branch=master)
+[![dependency status](https://deps.rs/repo/github/eonm/refine-io/status.svg)](https://deps.rs/repo/github/eonm/refine-io)
 [![made-with-Rust](https://img.shields.io/badge/Made%20with-Rust-1f425f.svg)](https://www.rust-lang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![dependency status](https://deps.rs/repo/github/eonm/refine-io/status.svg)](https://deps.rs/repo/github/eonm/refine-io)
 
 _RefineIO facilite la création la transformation et l'export de projets OpenRefine_
 </div>
