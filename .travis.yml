@@ -28,12 +28,24 @@ before_script:
 
 os:
   - linux
-sudo: false
+  - windows
 cache: cargo
 script:
   - ./openrefine-3.2/refine &
   - python3 -m http.server &
   - cargo test --verbose --all
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_API_KEY
+  file:
+    - target/release/refine-io
+    - target/release/refine-io.exe
+  skip_cleanup: true
+  on:
+    repo: Eonm/refine-io
+    branch: release
+    tags: true
 
 after_success:
   - cargo coveralls --exclude-pattern=/.cargo,src/main.rs,scr/cli.rs
