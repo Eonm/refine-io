@@ -35,6 +35,7 @@ pub fn cli() -> clap::ArgMatches<'static> {
                 .short("n")
                 .long("project-name")
                 .value_name("NAME")
+                .conflicts_with("input")
                 .help("Nom du projet OpenRefine")
                 .takes_value(true),
         )
