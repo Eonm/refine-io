@@ -4,6 +4,7 @@
 
 [![made-with-Rust](https://img.shields.io/badge/Made%20with-Rust-1f425f.svg)](https://www.rust-lang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![dependency status](https://deps.rs/repo/github/eonm/refine-io/status.svg)](https://deps.rs/repo/github/eonm/refine-io)
 
 _RefineIO facilite la création la transformation et l'export de projets OpenRefine_
 </div>
