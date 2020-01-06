@@ -13,7 +13,7 @@ _RefineIO facilite la création la transformation et l'export de projets OpenRef
 
 ## Installation
 
-Vous pouvez installer la dernière version stable de refineIO depuis la page release de ce dépôt.
+Vous pouvez installer la dernière version stable de refineIO depuis la page [release](https://github.com/Eonm/refine-io/releases) de ce dépôt.
 
 ### Compilation et installation depuis le code source
 
@@ -22,7 +22,7 @@ Pour compiler refineIO vous devez avoir installé [rust](https://www.rust-lang.o
 
 __Linux__
 
-Sous linux la compilation et l'installation de refineIO peuvent être réalisées grâce au Makefile présent dans ce dépôt.
+Sous Linux la compilation et l'installation de refineIO peuvent être réalisées grâce au Makefile présent dans ce dépôt.
 
 ```sh
 make build
@@ -41,7 +41,7 @@ Le binaire de refineIO sera compilé dans le dossier suivant : `target\release`
 
 Par défaut refineIO utilise l'adresse `127.0.0.1:3333` pour se connecter au serveur OpenRefine. Vous pouvez changer ce comportement en ajoutant une variable d'environnement `REFINE_URL` à votre système ou dans un fichier `.env` situé dans le répertoire ou est exécuté refineIO.
 
-__Sous linux__
+__Sous Linux__
 
 ```sh
 export REFINE_URL=ADRESSE_DU_SERVEUR
@@ -100,7 +100,7 @@ __Import depuis une URL__ `--input=URL`
 refine-io --input="http://www.theses.fr/?q=*:*&format=json" --format=json --record-path='["_", "response", "docs", "_"]'
 ```
 
-Seules les URLs valides et ayant un protocole (http, https, etc.) sont acceptées par refineIO.
+Seul les URLs valides et ayant un protocole (http, https, etc.) sont acceptées par refineIO.
 
 __Import depuis l'entrée standard__
 
@@ -109,7 +109,7 @@ cat playground/input.json | refine-io --format=json --record-path='["_", "respon
 ```
 __Spécifier un nom de projet__ `--name=NOM`
 
-Par défaut le nom d'un projet correspond à la date du jour au format UTC. Il est possible de spécifié le nom du projet avec l'option `--name`. Cette option ne peut être utilisé que pour la création d'un projet.
+Par défaut le nom d'un projet correspond à la date du jour au format UTC. Il est possible de spécifier le nom du projet avec l'option `--name`. Cette option ne peut être utilisée que pour la création d'un projet.
 
 ```sh
 refine-io --input=playground/input.json --format=json --record-path='["_", "response", "docs", "_"]' --name="nom du projet"
@@ -157,7 +157,7 @@ refine-io --project-id=123456789 --print csv > data.csv
 
 __Exporter les données dans un fichier__ `--export=FORMAT`
 
-Les données peuvent être exportés au format csv, tsv, html, xsl, xsls et ods.
+Les données peuvent être exportées au format csv, tsv, html, xsl, xsls et ods.
 
 Si aucun nom de fichier n'est spécifié à l'export `-o` le fichier téléchargé portera le nom du projet OpenRefine.
 
@@ -171,7 +171,7 @@ refine-io --project-id=123456789 --export csv -o data.csv
 
 __Ouverture automatique du fichier exporté__ `--open-export`
 
-Les données exportées peuvent être ouverte dans le logiciel par défaut de votre système d'exploitation.
+Les données exportées peuvent être ouvertes dans le logiciel par défaut de votre système d'exploitation.
 
 ```sh
 refine-io --project-id=123456789 --export csv --open-export
@@ -179,16 +179,16 @@ refine-io --project-id=123456789 --export csv --open-export
 
 ## Suppression du projet
 
-Le projet OpenRefine peut être supprimé grâce à l'option `--clean`. __Attention cette action est irreversible.__ Aucune confirmation ne sera demandée par refine-io.
+Le projet OpenRefine peut être supprimé grâce à l'option `--clean`. __Attention cette action est irréversible.__ Aucune confirmation ne sera demandée par refineIO.
 
 ```sh
 refine-io --project-id=123456789 --export csv --open-export
 ```
 
-## Variables d'environement
+## Variables d'environnement
 
-Certaines variables d'environement peuvent être utilisées pour changer le comportement de refineIO
+Certaines variables d'environnement peuvent être utilisées pour changer le comportement de refineIO
 
 `RECORD_PATH` = définit le record path à utiliser par défaut
 
-`RUST_LOG` = permet de définir le niveaux de log et de spécifier les modules devant logger les informations. Voir [env_logger](https://docs.rs/crate/).
+`RUST_LOG` = permet de définir le niveau de log ("trace", "debug", "info", "warn" et "error"). Voir [env_logger](https://docs.rs/crate/).
