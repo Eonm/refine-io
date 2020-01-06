@@ -23,7 +23,7 @@ before_script:
   - tar -xvzf openrefine-linux-3.2.tar.gz
   - export PATH=$HOME/.cargo/bin:$PATH
   - cargo install cargo-update || echo "cargo-update already installed"
-  - cargo install cargo-travis || echo "cargo-travis already installed"
+  - if [ "$TRAVIS_OS_NAME" = "linux" ] cargo install cargo-travis || echo "cargo-travis already installed"
   - cargo install-update -a
 
 os:
@@ -48,7 +48,7 @@ deploy:
     tags: true
 
 after_success:
-  - cargo coveralls --exclude-pattern=/.cargo,src/main.rs,scr/cli.rs
+  -  if [ "$TRAVIS_OS_NAME" = "linux" ] cargo coveralls --exclude-pattern=/.cargo,src/main.rs,scr/cli.rs
 
 notifications:
   email: false
