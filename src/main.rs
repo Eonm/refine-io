@@ -24,7 +24,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         env_logger::from_env(Env::default().default_filter_or("info")).init();
     };
 
-    info!("🏭 ready to refine 🛢️");
+    if cfg!(windows) {
+        info!("ready to refine");
+    } else {
+        info!("🏭 ready to refine 🛢️");
+    }
 
     let project = import_or_open(&matches)?;
     modify(&matches, project.clone())?;
