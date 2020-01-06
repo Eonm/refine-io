@@ -18,9 +18,13 @@ impl Export for RefineProject {
         let file_name = if let Some(file_name) = file_name {
             file_name
         } else {
-            format!("{}.{}", self.project_name.clone(), format)
+            if cfg!(windows) {
+                format!("{}.{}", self.project_name.clone().replace(":", "-").replace(".", "_").replace(" ", "_"), format)
+            } else  {
+                self.project_name.clone()
+            }
         };
-
+        
         info!("saving data to disk");
         let mut data = download_data(&self.project_id, &format)?;
         save(&mut data, &file_name)?;
