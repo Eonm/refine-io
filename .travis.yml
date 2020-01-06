@@ -34,6 +34,7 @@ script:
   - ./openrefine-3.2/refine &
   - python3 -m http.server &
   - cargo test --verbose --all
+  - cargo build --release
 
 deploy:
   provider: releases
