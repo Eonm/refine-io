@@ -19,10 +19,10 @@ addons:
       - kalakris-cmake
 
 before_script:
-  - wget https://github.com/OpenRefine/OpenRefine/releases/download/3.2/openrefine-linux-3.2.tar.gz
-  - tar -xvzf openrefine-linux-3.2.tar.gz
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then wget https://github.com/OpenRefine/OpenRefine/releases/download/3.2/openrefine-linux-3.2.tar.gz;
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then tar -xvzf openrefine-linux-3.2.tar.gz; fi
   - export PATH=$HOME/.cargo/bin:$PATH
-  - cargo install cargo-update || echo "cargo-update already installed"
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then cargo install cargo-update || echo "cargo-update already installed" ; fi
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then cargo install cargo-travis || echo "cargo-travis already installed" ; fi
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then cargo install-update -a ; fi
 
@@ -31,9 +31,9 @@ os:
   - windows
 cache: cargo
 script:
-  - ./openrefine-3.2/refine &
-  - python3 -m http.server &
-  - cargo test --verbose --all
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then ./openrefine-3.2/refine & ; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then python3 -m http.server & ; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then cargo test --verbose --all ; fi
   - cargo build --release
 
 deploy:
