@@ -19,7 +19,7 @@ addons:
       - kalakris-cmake
 
 before_script:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then wget https://github.com/OpenRefine/OpenRefine/releases/download/3.2/openrefine-linux-3.2.tar.gz;
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then wget https://github.com/OpenRefine/OpenRefine/releases/download/3.2/openrefine-linux-3.2.tar.gz ; fi
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then tar -xvzf openrefine-linux-3.2.tar.gz; fi
   - export PATH=$HOME/.cargo/bin:$PATH
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then cargo install cargo-update || echo "cargo-update already installed" ; fi
@@ -49,7 +49,7 @@ deploy:
     tags: true
 
 after_success:
-  -  if [ "$TRAVIS_OS_NAME" = "linux" ]; then cargo coveralls --exclude-pattern=/.cargo,src/main.rs,scr/cli.rs; fi
+  -  if [ "$TRAVIS_OS_NAME" = "linux" ]; then cargo coveralls --exclude-pattern=/.cargo,src/main.rs,scr/cli.rs ; fi
 
 notifications:
   email: false
