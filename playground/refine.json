@@ -1,0 +1,15 @@
+[
+    {
+      "op": "core/column-addition",
+      "engineConfig": {
+        "facets": [],
+        "mode": "row-based"
+      },
+      "baseColumnName": "_ - subjectFR - subjectFR",
+      "expression": "grel:value",
+      "onError": "set-to-blank",
+      "newColumnName": "test",
+      "columnInsertIndex": 1,
+      "description": "Create column test at index 1 based on column _ - subjectFR - subjectFR using expression grel:value"
+    }
+  ]

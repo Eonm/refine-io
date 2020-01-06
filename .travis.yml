@@ -1,0 +1,55 @@
+language: rust
+rust :
+  - stable
+  - nightly
+cache: cargo
+
+addons:
+  apt:
+    packages:
+      - libcurl4-openssl-dev
+      - libelf-dev
+      - libdw-dev
+      - libbfd-dev
+      - binutils-dev
+      - cmake
+      - default-jre
+      - python3
+    sources:
+      - kalakris-cmake
+
+before_script:
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then wget https://github.com/OpenRefine/OpenRefine/releases/download/3.2/openrefine-linux-3.2.tar.gz ; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then tar -xvzf openrefine-linux-3.2.tar.gz; fi
+  - export PATH=$HOME/.cargo/bin:$PATH
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then cargo install cargo-update || echo "cargo-update already installed" ; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then cargo install cargo-travis || echo "cargo-travis already installed" ; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then cargo install-update -a ; fi
+
+os:
+  - linux
+  - windows
+cache: cargo
+script:
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then ./openrefine-3.2/refine& fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then python3 -m http.server& fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then cargo test --verbose --all ; fi
+  - cargo build --release
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_API_KEY
+  file:
+    - target/release/refine-io
+    - target/release/refine-io.exe
+  skip_cleanup: true
+  on:
+    repo: Eonm/refine-io
+    branch: release
+    tags: true
+
+after_success:
+  -  if [ "$TRAVIS_OS_NAME" = "linux" ]; then cargo coveralls --exclude-pattern=/.cargo,src/main.rs,scr/cli.rs ; fi
+
+notifications:
+  email: false
