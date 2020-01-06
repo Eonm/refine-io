@@ -4,7 +4,7 @@ pub fn cli() -> clap::ArgMatches<'static> {
     App::new("refine-io")
         .version("1.0")
         .author("eonm. <eon.mathis@gmail.com>")
-        .about("Automatise la creation et l'export de projet OpenRefine")
+        .about("Automatise la creation et l'export de projets OpenRefine")
         .arg(
             Arg::with_name("input")
                 .short("i")
@@ -50,7 +50,7 @@ pub fn cli() -> clap::ArgMatches<'static> {
                 .value_name("ID")
                 .conflicts_with("input")
                 .takes_value(true)
-                .help("Ouvre un projet OpenRefine"),
+                .help("Charge un projet OpenRefine"),
         )
         .arg(
             Arg::with_name("script")
