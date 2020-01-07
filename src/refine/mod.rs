@@ -1,7 +1,5 @@
 use url::Url;
-use serde_json::Value;
 
-use std::env;
 use std::error::Error;
 use std::io::{self, Read};
 
@@ -9,7 +7,9 @@ pub mod import;
 pub mod process;
 pub mod export;
 pub mod delete;
+pub mod info;
 use crate::refine::import::Import;
+use crate::consts;
 
 /// A struct for initialize a OpenRefine project
 #[derive(Debug, Clone)]
@@ -89,17 +89,14 @@ impl RefineProject {
     /// Load an OpenRefine project
     pub fn load(id: &str) -> Result<RefineProject, Box<dyn Error>> {
         info!("loading OpenRefine project {}", id);
-        let refine_base_url = env::var("OPEN_REFINE_URL").unwrap_or("http://127.0.0.1:3333".into());
-        let command_url = format!("{}/command/core/get-all-project-metadata", refine_base_url);
 
-        let response = reqwest::get(&command_url)?.text()?;
-        let v: Value = serde_json::from_str(&response)?;
+        let projects_info = consts::REFINE_PROJECTS_INFO.as_ref().expect("Failed to get OpenRefine projects data");
 
-        let project_name =  match v["projects"][id]["name"].as_str() {
+        let project_name =  match projects_info["projects"][id]["name"].as_str() {
             Some(value) => value,
             None => {
                 error!("Failed to load project {}", id);
-                panic!("Failed to load project")
+                panic!("Failed to load project {}", id)
             },
         };
 

@@ -105,5 +105,10 @@ pub fn cli() -> clap::ArgMatches<'static> {
                 .long("silent")
                 .help("Cache les logs"),
         )
+        .arg(
+            Arg::with_name("info")
+                .long("info")
+                .help("Affiche les informations relative à un projet OpenRefine"),
+        )
         .get_matches()
 }
