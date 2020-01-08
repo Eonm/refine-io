@@ -61,6 +61,12 @@ pub fn cli() -> clap::ArgMatches<'static> {
                 .takes_value(true),
         )
         .arg(
+            Arg::with_name("sync")
+                .long("sync")
+                .help("Attend que les scripts aient fini d'être appliqué avant de continuer l'exécution")
+                .requires("script"),
+        )
+        .arg(
             Arg::with_name("export")
                 .short("e")
                 .long("export")

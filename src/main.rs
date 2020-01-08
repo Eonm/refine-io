@@ -15,7 +15,7 @@ mod utils;
 mod cli;
 use cli::cli;
 mod refine;
-use refine::{RefineInit, RefineProject, export::Export, process::Process, delete::Delete};
+use refine::{RefineInit, RefineProject, export::Export, process::Process, delete::Delete, process::ProcessMod};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = cli();
@@ -69,7 +69,13 @@ fn import_or_open(matches: &clap::ArgMatches) -> Result<RefineProject, Box<dyn E
 
 fn modify(matches: &clap::ArgMatches, mut project: RefineProject) -> Result<(), Box<dyn Error>> {
     project.refine_script =  matches.value_of("script").map(String::from);
-    project.clone().apply_operations()?;
+    let process_mod = if matches.is_present("sync") {
+        ProcessMod::Sync
+    } else {
+        ProcessMod::Async
+    };
+    
+    project.clone().process(process_mod)?;
 
     Ok(())
 }

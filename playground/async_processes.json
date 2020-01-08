@@ -1,0 +1,49 @@
+[
+    {
+      "op": "core/column-addition-by-fetching-urls",
+      "engineConfig": {
+        "facets": [],
+        "mode": "row-based"
+      },
+      "baseColumnName": "_ - subjectFR - subjectFR",
+      "urlExpression": "grel:\"https://postman-echo.com/get?subject=\"+value",
+      "onError": "set-to-blank",
+      "newColumnName": "echo",
+      "columnInsertIndex": 1,
+      "delay": 500,
+      "cacheResponses": true,
+      "httpHeadersJson": [
+        {
+          "name": "authorization",
+          "value": ""
+        },
+        {
+          "name": "user-agent",
+          "value": "OpenRefine 3.2 [55c921b]"
+        },
+        {
+          "name": "accept",
+          "value": "*/*"
+        }
+      ],
+      "description": "Create column echo at index 1 by fetching URLs based on column _ - subjectFR - subjectFR using expression grel:\"https://postman-echo.com/get?subject=\"+value"
+    },
+    {
+      "op": "core/column-addition",
+      "engineConfig": {
+        "facets": [],
+        "mode": "row-based"
+      },
+      "baseColumnName": "echo",
+      "expression": "grel:value.parseJson()[\"args\"][\"subject\"]",
+      "onError": "set-to-blank",
+      "newColumnName": "echo-1",
+      "columnInsertIndex": 2,
+      "description": "Create column echo-1 at index 2 based on column echo using expression grel:value.parseJson()[\"args\"][\"subject\"]"
+    },
+    {
+      "op": "core/column-removal",
+      "columnName": "echo",
+      "description": "Remove column echo"
+    }
+  ]
