@@ -125,7 +125,9 @@ refine-io --input=playground/input.json --format=json --record-path='["_", "resp
 
 ### Application de scripts
 
-Les scripts peuvent être appliqués sur un projet existant ou sur un projet créé.
+Les scripts peuvent être appliqués sur un projet existant ou sur un projet créé. 
+
+Par défaut les scripts sont appliqués de manière asynchrone, c'est-à-dire que refineIO n'attendra pas qu'ils aient été entièrement appliqués avant de passer aux opérations suivantes comme l'export. Il est possible de forcer refineIO a appliquer les scripts de manière synchrone avec l'option `--sync`. 
 
 __Après la création d'un projet__ `--script=SCRIPT.json`
 
@@ -192,3 +194,5 @@ Certaines variables d'environnement peuvent être utilisées pour changer le com
 `RECORD_PATH` = définit le record path à utiliser par défaut
 
 `RUST_LOG` = permet de définir le niveau de log ("trace", "debug", "info", "warn" et "error"). Voir [env_logger](https://docs.rs/crate/).
+
+`CHECK_ASYNC_INTERVAL` = il correspond à l'intervalle (ms) de vérification des processus asynchrone d'OpenRefine. Cette variable est utilisée par l'option `--sync` 
