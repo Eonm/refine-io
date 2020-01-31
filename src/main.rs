@@ -75,7 +75,7 @@ fn modify(matches: &clap::ArgMatches, mut project: RefineProject) -> Result<(), 
         ProcessMod::Async
     };
     
-    if matches.is_present("sync") {
+    if matches.is_present("script") {
         project.clone().process(process_mod)?;
     }
 
