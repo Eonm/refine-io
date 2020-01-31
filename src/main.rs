@@ -75,7 +75,9 @@ fn modify(matches: &clap::ArgMatches, mut project: RefineProject) -> Result<(), 
         ProcessMod::Async
     };
     
-    project.clone().process(process_mod)?;
+    if matches.is_present("sync") {
+        project.clone().process(process_mod)?;
+    }
 
     Ok(())
 }
