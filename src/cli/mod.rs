@@ -63,7 +63,7 @@ pub fn cli() -> clap::ArgMatches<'static> {
         .arg(
             Arg::with_name("sync")
                 .long("sync")
-                .help("Attend que les scripts aient fini d'être appliqué avant de continuer l'exécution")
+                .help("Attend que les scripts aient fini d'être appliqués avant d'exporter ou d'afficher les données du projet OpenRefine")
                 .requires("script"),
         )
         .arg(

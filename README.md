@@ -171,6 +171,8 @@ refine-io --project-id=123456789 --export csv
 refine-io --project-id=123456789 --export csv -o data.csv
 ```
 
+L'option `sync` permet d'attendre que les scripts de modification aient été appliqués avant de télécharger ou d'afficher les données dans la console.
+
 __Ouverture automatique du fichier exporté__ `--open-export`
 
 Les données exportées peuvent être ouvertes dans le logiciel par défaut de votre système d'exploitation.
